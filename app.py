@@ -190,11 +190,59 @@ wheel_html = f"""
                 border-left:16px solid transparent;
                 border-right:16px solid transparent;
                 border-top:30px solid #e32626"></div>
-    <div id="wheel" style="
-      width:100%;height:100%;border-radius:50%;
-      border:8px solid white;box-shadow:0 3px 18px #aaa;
-      background:conic-gradient({segments});
-      transform:rotate(0deg);">
+    
+<div id="wheel" style="
+  position:relative;
+  width:100%;
+  height:100%;
+  border-radius:50%;
+  border:8px solid white;
+  box-shadow:0 3px 18px #aaa;
+  background:conic-gradient({segments});
+  transform:rotate(0deg);
+  overflow:hidden;
+">
+  <div style="
+    position:absolute;
+    inset:0;
+    border-radius:50%;
+    pointer-events:none;
+  ">
+    <div style="
+      position:absolute;
+      left:50%;
+      top:50%;
+      width:50%;
+      height:50%;
+      transform-origin:0 0;
+      transform:rotate(0deg);
+    ">
+      <span style="
+        position:absolute;
+        left:48%;
+        top:25%;
+        transform:translate(-50%,-50%) rotate(30deg);
+        font-size:15px;
+        font-weight:bold;
+        color:#222;
+        white-space:nowrap;
+      ">Giảm 5%</span>
+    </div>
+  </div>
+  <div style="
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    width:48px;
+    height:48px;
+    background:white;
+    border:6px solid orange;
+    border-radius:50%;
+    z-index:5;
+  "></div>
+</div>
+
       <div style="position:absolute;left:50%;top:50%;
                   transform:translate(-50%,-50%);
                   width:48px;height:48px;background:white;
