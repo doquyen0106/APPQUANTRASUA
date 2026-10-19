@@ -166,7 +166,9 @@ if st.button("🎯 BẮT ĐẦU QUAY", type="primary",
     st.session_state.wheel_discount = 0
 
 # Vẽ vòng quay bằng HTML/CSS
-wheel_labels = [p["name"] for p in PRIZES]
+
+# ===== TẠO VÒNG QUAY CÓ ĐỦ CHỮ TRÊN 6 Ô =====
+
 wheel_colors = [p["color"] for p in PRIZES]
 
 segments = ", ".join(
@@ -174,103 +176,138 @@ segments = ", ".join(
     for i, color in enumerate(wheel_colors)
 )
 
-# Xác định góc dừng theo phần thưởng
+# Tính góc dừng sao cho phần thưởng trúng nằm dưới mũi tên
 if st.session_state.wheel_prize:
     prize_index = PRIZES.index(st.session_state.wheel_prize)
-    stop_angle = 360 * 5 + (360 - (prize_index * 60 + 30))
+    center_angle = prize_index * 60 + 30
+    stop_angle = 360 * 5 + (270 - center_angle) % 360
 else:
     stop_angle = 0
 
-wheel_html = f"""
-<div style="text-align:center;font-family:Arial,sans-serif">
-  <div style="position:relative;width:min(82vw,360px);
-              aspect-ratio:1;margin:15px auto">
-    <div style="position:absolute;top:-5px;left:calc(50% - 16px);
-                z-index:2;width:0;height:0;
-                border-left:16px solid transparent;
-                border-right:16px solid transparent;
-                border-top:30px solid #e32626"></div>
-    
-<div id="wheel" style="
-  position:relative;
-  width:100%;
-  height:100%;
-  border-radius:50%;
-  border:8px solid white;
-  box-shadow:0 3px 18px #aaa;
-  background:conic-gradient({segments});
-  transform:rotate(0deg);
-  overflow:hidden;
-">
-  <div style="
-    position:absolute;
-    inset:0;
-    border-radius:50%;
-    pointer-events:none;
-  ">
-    <div style="
-      position:absolute;
-      left:50%;
-      top:50%;
-      width:50%;
-      height:50%;
-      transform-origin:0 0;
-      transform:rotate(0deg);
-    ">
-      <span style="
-        position:absolute;
-        left:48%;
-        top:25%;
-        transform:translate(-50%,-50%) rotate(30deg);
-        font-size:15px;
-        font-weight:bold;
-        color:#222;
-        white-space:nowrap;
-      ">Giảm 5%</span>
-    </div>
-  </div>
-  <div style="
-    position:absolute;
-    left:50%;
-    top:50%;
-    transform:translate(-50%,-50%);
-    width:48px;
-    height:48px;
-    background:white;
-    border:6px solid orange;
-    border-radius:50%;
-    z-index:5;
-  "></div>
-</div>
+# Tạo nhãn cho cả 6 ô, tự động đặt đúng vị trí
+labels_html = ""
 
-      <div style="position:absolute;left:50%;top:50%;
-                  transform:translate(-50%,-50%);
-                  width:48px;height:48px;background:white;
-                  border:6px solid orange;border-radius:50%">
-      </div>
+for i, prize in enumerate(PRIZES):
+    middle_angle = i * 60 + 30
+
+    labels_html += f"""
+    <div style="
+        position:absolute;
+        left:50%;
+        top:50%;
+        width:0;
+        height:0;
+        transform:rotate({middle_angle}deg) translateY(-105px);
+        z-index:2;
+        pointer-events:none;
+    ">
+        <span style="
+            position:absolute;
+            left:0;
+            top:0;
+            transform:translate(-50%,-50%)
+                      rotate(-{middle_angle}deg);
+            font-size:13px;
+            font-weight:bold;
+            color:#222;
+            white-space:nowrap;
+            text-align:center;
+        ">{prize['name']}</span>
     </div>
-  </div>
-  <div style="font-size:13px;color:#666">
-    Bấm nút BẮT ĐẦU QUAY ở phía trên để nhận thưởng.
-  </div>
-</div>
-<script>
-const wheel = document.getElementById("wheel");
-wheel.animate(
-  [
-    {{ transform: "rotate(0deg)" }},
-    {{ transform: "rotate({stop_angle}deg)" }}
-  ],
-  {{
-    duration: 4000,
-    easing: "cubic-bezier(0.15, 0.75, 0.12, 1)",
-    fill: "forwards"
-  }}
-);
-</script>
+    """
+
+wheel_html = f"""
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+    * {{
+        box-sizing: border-box;
+    }}
+
+    body {{
+        margin: 0;
+        padding: 12px 0;
+        background: transparent;
+        font-family: Arial, sans-serif;
+    }}
+
+    .wheel-container {{
+        position: relative;
+        width: min(82vw, 360px);
+        aspect-ratio: 1;
+        margin: 15px auto;
+    }}
+
+    .pointer {{
+        position: absolute;
+        top: -5px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 17px solid transparent;
+        border-right: 17px solid transparent;
+        border-top: 30px solid #e32626;
+        z-index: 10;
+    }}
+
+    #wheel {{
+        position: absolute;
+        inset: 0;
+        border: 8px solid white;
+        border-radius: 50%;
+        box-shadow: 0 3px 18px #aaa;
+        background: conic-gradient({segments});
+        overflow: hidden;
+        transform: rotate(0deg);
+    }}
+
+    .center {{
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background: white;
+        border: 7px solid orange;
+        z-index: 5;
+    }}
+</style>
+</head>
+<body>
+    <div class="wheel-container">
+        <div class="pointer"></div>
+
+        <div id="wheel">
+            {labels_html}
+            <div class="center"></div>
+        </div>
+    </div>
+
+    <script>
+        const wheel = document.getElementById("wheel");
+        const targetAngle = {stop_angle};
+
+        wheel.animate(
+            [
+                {{ transform: "rotate(0deg)" }},
+                {{ transform: "rotate(" + targetAngle + "deg)" }}
+            ],
+            {{
+                duration: 4000,
+                easing: "cubic-bezier(0.15, 0.75, 0.12, 1)",
+                fill: "forwards"
+            }}
+        );
+    </script>
+</body>
+</html>
 """
 
-components.html(wheel_html, height=410)
+components.html(wheel_html, height=410, scrolling=False)
 
 # Hiển thị kết quả
 if st.session_state.wheel_prize:
