@@ -98,6 +98,28 @@ with col_left:
     with col_qty:
         quantity = st.number_input("Số lượng:", min_value=1, value=1, step=1)
 
+# Ảnh tương ứng với từng món nước
+TEA_IMAGES = {
+    "Trà Sữa Truyền Thống": "truyen_thong.jpg",
+    "Trà Sữa Trân Châu Đường Đen": "tran_chau_duong_den.jpg",
+    "Trà Sữa Thái Xanh": "thai_xanh.jpg",
+    "Trà Sữa Ô Long": "o_long.jpg",
+    "Trà Sữa Matcha": "matcha.jpg",
+    "Trà Sữa Dâu Tây": "dau_tay.jpg",
+    "Trà Đào Cam Sả": "dao_cam_sa.jpg",
+    "Trà Dâu Tằm": "dau_tam.jpg",
+}
+
+# Hiển thị ảnh món nước đang được chọn
+image_path = TEA_IMAGES.get(selected_tea)
+
+if image_path:
+    st.image(
+        image_path,
+        caption=selected_tea,
+        width=300
+    )
+
     # 3. Size, Đường, Đá
     c_size, c_sugar, c_ice = st.columns(3)
     with c_size:
