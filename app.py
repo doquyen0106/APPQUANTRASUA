@@ -414,7 +414,7 @@ if st.session_state.get("invoice_paid") and st.session_state.cart:
     # Hiển thị hóa đơn trực quan
     invoice_box = st.container(border=True)
     with invoice_box:
-        st.markdown("<h2 style='text-align: center; color: #FF4B4B;'>🧋 HÓA ĐƠN BÁN HÀNG - BOBA TEA</h2>", unsafe_allow_html=True)
+        st.markdown("<h2 style='text-align: center; color: #FF4B4B;'>🧋 HÓA ĐƠN BÁN HÀNG - TRA SUA NIE</h2>", unsafe_allow_html=True)
         st.write(f"**Thời gian:** {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
         st.write(f"**Khách hàng:** {customer_name if customer_name else 'Khách vãng lai'}")
         
