@@ -1,3 +1,4 @@
+from pathlib import Path
 import streamlit as st
 import pandas as pd
 from datetime import datetime
@@ -38,16 +39,20 @@ TOPPING_OPTIONS = {
 }
 
 # Hình ảnh tương ứng với từng món trà sữa
-TEA_IMAGES = {
-    "Trà Sữa Truyền Thống": "images/truyen_thong.jpg",
-    "Trà sữa Gạo Rang": "images/gao_rang.jpg",
-    "Trà Sữa Trân Châu Đường Đen": "images/tran_chau_duong_den.jpg",
-    "Trà Sữa Thái Xanh": "images/thai_xanh.jpg",
-    "Trà Sữa Ô Long": "images/o_long.jpg",
-    "Trà Sữa Matcha": "images/matcha.jpg",
-    "Trà Sữa Dâu Tây": "images/dau_tay.jpg",
-    "Trà Đào Cam Sả": "images/dao_cam_sa.jpg",
-    "Trà Dâu Tằm": "images/dau_tam.jpg",
+
+# Hiển thị hình ảnh món được chọn
+BASE_DIR = Path(__file__).resolve().parent
+image_path = BASE_DIR / TEA_IMAGES[selected_tea]
+
+if image_path.is_file():
+    st.image(
+        str(image_path),
+        caption=f"{selected_tea} - {MENU_TEA[selected_tea]:,} VNĐ",
+        use_container_width=True
+    )
+else:
+    st.warning(f"Không tìm thấy ảnh: {image_path}")
+
 }
 
 SUGAR_LEVELS = ["100% (Bình thường)", "70%", "50%", "30%", "0% (Không đường)"]
