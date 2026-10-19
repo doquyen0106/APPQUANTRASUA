@@ -1,4 +1,3 @@
-from pathlib import Path
 import streamlit as st
 import pandas as pd
 from datetime import datetime
@@ -37,21 +36,6 @@ TOPPING_OPTIONS = {
     "Pudding trứng": 8000,
     "Kem Cheese": 10000
 }
-
-# Hình ảnh tương ứng với từng món trà sữa
-
-# Hiển thị hình ảnh món được chọn
-BASE_DIR = Path(__file__).resolve().parent
-image_path = BASE_DIR / TEA_IMAGES[selected_tea]
-
-if image_path.is_file():
-    st.image(
-        str(image_path),
-        caption=f"{selected_tea} - {MENU_TEA[selected_tea]:,} VNĐ",
-        use_container_width=True
-    )
-else:
-    st.warning(f"Không tìm thấy ảnh: {image_path}")
 
 SUGAR_LEVELS = ["100% (Bình thường)", "70%", "50%", "30%", "0% (Không đường)"]
 ICE_LEVELS = ["100% (Bình thường)", "70%", "50%", "30%", "0% (Không đá)"]
@@ -93,7 +77,7 @@ def create_txt_invoice(customer_name, cart, total_amount, discount, final_amount
 # ---------------------------------------------------------
 # GIAO DIỆN CHÍNH
 # ---------------------------------------------------------
-st.title("Tiệm Trà Sữa Nie")
+st.title("QUÁN TRÀ SỮA MR BÌNH")
 st.markdown("---")
 
 col_left, col_right = st.columns([1.1, 0.9])
@@ -111,21 +95,6 @@ with col_left:
     col_item, col_qty = st.columns([3, 1])
     with col_item:
         selected_tea = st.selectbox("Loại trà sữa:", list(MENU_TEA.keys()))
-        
-# Hiển thị ảnh món được chọn
-import os
-
-image_path = TEA_IMAGES[selected_tea]
-
-if os.path.exists(image_path):
-    st.image(
-        image_path,
-        caption=f"{selected_tea} - {MENU_TEA[selected_tea]:,} VNĐ",
-        width=280
-    )
-else:
-    st.info("Chưa có hình ảnh cho món này. Vui lòng thêm ảnh vào thư mục images.")
-
     with col_qty:
         quantity = st.number_input("Số lượng:", min_value=1, value=1, step=1)
 
