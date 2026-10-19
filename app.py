@@ -135,6 +135,114 @@ if image_path:
         options=list(TOPPING_OPTIONS.keys())
     )
 
+# ================= VÒNG QUAY MAY MẮN =================
+import random
+import streamlit.components.v1 as components
+
+st.markdown("---")
+st.subheader("🎡 VÒNG QUAY MAY MẮN")
+st.write("Quay thưởng để nhận ưu đãi cho đơn trà sữa của bạn!")
+
+# Các phần thưởng
+PRIZES = [
+    {"name": "Giảm 5%", "discount": 5, "color": "#FF7777"},
+    {"name": "Free Topping", "discount": 0, "color": "#77D7F7"},
+    {"name": "Tặng Bánh", "discount": 0, "color": "#B9F57A"},
+    {"name": "Giảm 10%", "discount": 10, "color": "#FFD080"},
+    {"name": "Giảm 15%", "discount": 15, "color": "#A6F5E8"},
+    {"name": "Giảm 20%", "discount": 20, "color": "#B38AF5"},
+]
+
+if "wheel_prize" not in st.session_state:
+    st.session_state.wheel_prize = None
+
+if "wheel_discount" not in st.session_state:
+    st.session_state.wheel_discount = 0
+
+# Chọn phần thưởng khi bấm nút
+if st.button("🎯 BẮT ĐẦU QUAY", type="primary",
+             use_container_width=True):
+    st.session_state.wheel_prize = random.choice(PRIZES)
+    st.session_state.wheel_discount = 0
+
+# Vẽ vòng quay bằng HTML/CSS
+wheel_labels = [p["name"] for p in PRIZES]
+wheel_colors = [p["color"] for p in PRIZES]
+
+segments = ", ".join(
+    f"{color} {i * 60}deg {(i + 1) * 60}deg"
+    for i, color in enumerate(wheel_colors)
+)
+
+# Xác định góc dừng theo phần thưởng
+if st.session_state.wheel_prize:
+    prize_index = PRIZES.index(st.session_state.wheel_prize)
+    stop_angle = 360 * 5 + (360 - (prize_index * 60 + 30))
+else:
+    stop_angle = 0
+
+wheel_html = f"""
+<div style="text-align:center;font-family:Arial,sans-serif">
+  <div style="position:relative;width:min(82vw,360px);
+              aspect-ratio:1;margin:15px auto">
+    <div style="position:absolute;top:-5px;left:calc(50% - 16px);
+                z-index:2;width:0;height:0;
+                border-left:16px solid transparent;
+                border-right:16px solid transparent;
+                border-top:30px solid #e32626"></div>
+    <div id="wheel" style="
+      width:100%;height:100%;border-radius:50%;
+      border:8px solid white;box-shadow:0 3px 18px #aaa;
+      background:conic-gradient({segments});
+      transform:rotate(0deg);">
+      <div style="position:absolute;left:50%;top:50%;
+                  transform:translate(-50%,-50%);
+                  width:48px;height:48px;background:white;
+                  border:6px solid orange;border-radius:50%">
+      </div>
+    </div>
+  </div>
+  <div style="font-size:13px;color:#666">
+    Bấm nút BẮT ĐẦU QUAY ở phía trên để nhận thưởng.
+  </div>
+</div>
+<script>
+const wheel = document.getElementById("wheel");
+wheel.animate(
+  [
+    {{ transform: "rotate(0deg)" }},
+    {{ transform: "rotate({stop_angle}deg)" }}
+  ],
+  {{
+    duration: 4000,
+    easing: "cubic-bezier(0.15, 0.75, 0.12, 1)",
+    fill: "forwards"
+  }}
+);
+</script>
+"""
+
+components.html(wheel_html, height=410)
+
+# Hiển thị kết quả
+if st.session_state.wheel_prize:
+    prize = st.session_state.wheel_prize
+
+    st.success(f"🎉 Chúc mừng! Bạn nhận được: {prize['name']}")
+
+    if prize["discount"] > 0:
+        if st.button(
+            f"🎁 Áp dụng giảm {prize['discount']}%",
+            use_container_width=True
+        ):
+            st.session_state.wheel_discount = prize["discount"]
+            st.success("Đã chọn mức giảm giá từ vòng quay!")
+    else:
+        st.info(
+            "Bạn nhận được quà tặng. "
+            "Nhân viên có thể xác nhận và áp dụng quà tại quầy."
+        )
+
     # Tính giá tiền từng ly
     base_price = MENU_TEA[selected_tea]
     size_price = SIZE_OPTIONS[selected_size]
@@ -191,7 +299,14 @@ with col_right:
         
         col_disc, col_pay = st.columns(2)
         with col_disc:
-            discount = st.number_input("Giảm giá (%):", min_value=0, max_value=100, value=0, step=5)
+           discount = st.number_input(
+    "Giảm giá tổng (%):",
+    min_value=0,
+    max_value=100,
+    value=st.session_state.get("wheel_discount", 0),
+    step=5,
+    key="discount_input"
+)
         
         final_price = int(total_price * (1 - discount / 100))
 
