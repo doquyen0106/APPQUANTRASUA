@@ -177,10 +177,16 @@ segments = ", ".join(
 )
 
 # Tính góc dừng sao cho phần thưởng trúng nằm dưới mũi tên
+
+# Tính góc dừng để phần thưởng trúng nằm chính giữa mũi tên
 if st.session_state.wheel_prize:
     prize_index = PRIZES.index(st.session_state.wheel_prize)
+
+    # Mỗi ô rộng 60 độ, tính từ đỉnh vòng quay theo chiều kim đồng hồ
     center_angle = prize_index * 60 + 30
-    stop_angle = 360 * 5 + (270 - center_angle) % 360
+
+    # Quay 5 vòng đầy đủ rồi căn chính giữa ô trúng thưởng
+    stop_angle = 360 * 5 + (360 - center_angle) % 360
 else:
     stop_angle = 0
 
