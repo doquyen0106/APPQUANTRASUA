@@ -53,8 +53,6 @@ if image_path.is_file():
 else:
     st.warning(f"Không tìm thấy ảnh: {image_path}")
 
-}
-
 SUGAR_LEVELS = ["100% (Bình thường)", "70%", "50%", "30%", "0% (Không đường)"]
 ICE_LEVELS = ["100% (Bình thường)", "70%", "50%", "30%", "0% (Không đá)"]
 
