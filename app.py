@@ -39,17 +39,19 @@ TOPPING_OPTIONS = {
 }
 
 # Hình ảnh tương ứng với từng món trà sữa
+
 TEA_IMAGES = {
-    "Trà Sữa Truyền Thống": "images/truyen_thong.jpg",
-    "Trà sữa Gạo Rang": "images/gao_rang.jpg",
-    "Trà Sữa Trân Châu Đường Đen": "images/tran_chau_duong_den.jpg",
-    "Trà Sữa Thái Xanh": "images/thai_xanh.jpg",
-    "Trà Sữa Ô Long": "images/o_long.jpg",
-    "Trà Sữa Matcha": "images/matcha.jpg",
-    "Trà Sữa Dâu Tây": "images/dau_tay.jpg",
-    "Trà Đào Cam Sả": "images/dao_cam_sa.jpg",
-    "Trà Dâu Tằm": "images/dau_tam.jpg",
+    "Trà Sữa Truyền Thống": "truyen_thong.jpg",
+    "Trà sữa Gạo Rang": "gao_rang.jpg",
+    "Trà Sữa Trân Châu Đường Đen": "tran_chau_duong_den.jpg",
+    "Trà Sữa Thái Xanh": "thai_xanh.jpg",
+    "Trà Sữa Ô Long": "o_long.jpg",
+    "Trà Sữa Matcha": "matcha.jpg",
+    "Trà Sữa Dâu Tây": "dau_tay.jpg",
+    "Trà Đào Cam Sả": "dao_cam_sa.jpg",
+    "Trà Dâu Tằm": "dau_tam.jpg",
 }
+
 
 SUGAR_LEVELS = ["100% (Bình thường)", "70%", "50%", "30%", "0% (Không đường)"]
 ICE_LEVELS = ["100% (Bình thường)", "70%", "50%", "30%", "0% (Không đá)"]
@@ -113,7 +115,24 @@ with col_left:
 # Hiển thị ảnh món được chọn
 import os
 
-image_path = TEA_IMAGES[selected_tea]
+
+from pathlib import Path
+
+# Lấy thư mục chứa app.py
+BASE_DIR = Path(__file__).resolve().parent
+
+# Hiển thị ảnh món đã chọn
+image_path = BASE_DIR / TEA_IMAGES[selected_tea]
+
+if image_path.is_file():
+    st.image(
+        str(image_path),
+        caption=f"{selected_tea} - {MENU_TEA[selected_tea]:,} VNĐ",
+        width=300
+    )
+else:
+    st.error(f"Không tìm thấy ảnh: {image_path.name}")
+
 
 if os.path.exists(image_path):
     st.image(
