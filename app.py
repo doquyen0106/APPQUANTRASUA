@@ -13,14 +13,13 @@ st.set_page_config(
 
 # Danh sách menu & giá (VND)
 MENU_TEA = {
-    "Trà Sữa Truyền Thống": 20000,
-    "Trà sữa Gạo Rang": 20000,
-    "Trà Sữa Trân Châu Đường Đen": 25000,
-    "Trà Sữa Thái Xanh": 20000,
-    "Trà Sữa Ô Long": 25000,
-    "Trà Sữa Matcha": 23000,
-    "Trà Sữa Dâu Tây": 27000,
-    "Trà Đào Cam Sả": 19000,
+    "Trà Sữa Truyền Thống": 30000,
+    "Trà Sữa Trân Châu Đường Đen": 35000,
+    "Trà Sữa Thái Xanh": 32000,
+    "Trà Sữa Ô Long": 35000,
+    "Trà Sữa Matcha": 38000,
+    "Trà Sữa Dâu Tây": 35000,
+    "Trà Đào Cam Sả": 35000,
     "Trà Dâu Tằm": 32000,
 }
 
@@ -37,21 +36,6 @@ TOPPING_OPTIONS = {
     "Pudding trứng": 8000,
     "Kem Cheese": 10000
 }
-
-# Hình ảnh tương ứng với từng món trà sữa
-
-TEA_IMAGES = {
-    "Trà Sữa Truyền Thống": "truyen_thong.jpg",
-    "Trà sữa Gạo Rang": "gao_rang.jpg",
-    "Trà Sữa Trân Châu Đường Đen": "tran_chau_duong_den.jpg",
-    "Trà Sữa Thái Xanh": "thai_xanh.jpg",
-    "Trà Sữa Ô Long": "o_long.jpg",
-    "Trà Sữa Matcha": "matcha.jpg",
-    "Trà Sữa Dâu Tây": "dau_tay.jpg",
-    "Trà Đào Cam Sả": "dao_cam_sa.jpg",
-    "Trà Dâu Tằm": "dau_tam.jpg",
-}
-
 
 SUGAR_LEVELS = ["100% (Bình thường)", "70%", "50%", "30%", "0% (Không đường)"]
 ICE_LEVELS = ["100% (Bình thường)", "70%", "50%", "30%", "0% (Không đá)"]
@@ -93,7 +77,7 @@ def create_txt_invoice(customer_name, cart, total_amount, discount, final_amount
 # ---------------------------------------------------------
 # GIAO DIỆN CHÍNH
 # ---------------------------------------------------------
-st.title("QUÁN TRÀ SỮA NIE")
+st.title("QUÁN TRÀ SỮA MR BÌNH")
 st.markdown("---")
 
 col_left, col_right = st.columns([1.1, 0.9])
@@ -111,38 +95,6 @@ with col_left:
     col_item, col_qty = st.columns([3, 1])
     with col_item:
         selected_tea = st.selectbox("Loại trà sữa:", list(MENU_TEA.keys()))
-        
-# Hiển thị ảnh món được chọn
-import os
-
-
-from pathlib import Path
-
-# Lấy thư mục chứa app.py
-BASE_DIR = Path(__file__).resolve().parent
-
-# Hiển thị ảnh món đã chọn
-image_path = BASE_DIR / TEA_IMAGES[selected_tea]
-
-if image_path.is_file():
-    st.image(
-        str(image_path),
-        caption=f"{selected_tea} - {MENU_TEA[selected_tea]:,} VNĐ",
-        width=300
-    )
-else:
-    st.error(f"Không tìm thấy ảnh: {image_path.name}")
-
-
-if os.path.exists(image_path):
-    st.image(
-        image_path,
-        caption=f"{selected_tea} - {MENU_TEA[selected_tea]:,} VNĐ",
-        width=280
-    )
-else:
-    st.info("Chưa có hình ảnh cho món này. Vui lòng thêm ảnh vào thư mục images.")
-
     with col_qty:
         quantity = st.number_input("Số lượng:", min_value=1, value=1, step=1)
 
